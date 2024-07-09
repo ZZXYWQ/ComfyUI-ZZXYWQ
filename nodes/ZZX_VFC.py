@@ -2,8 +2,6 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 import subprocess
-import torch
-import numpy as np
 import cv2
 
 class VideoFormatConverter:
@@ -72,6 +70,16 @@ class VideoFormatConverter:
         return int((max_bitrate - min_bitrate) / (min_quality - max_quality) * (video_quality - max_quality) + max_bitrate)
 
     def process_video(self, video_path, output_enabled, output_filename, video_format, codec, video_quality, frame_rate, opencl_acceleration, video_width, video_height, scaling_filter, processing_method, audio_codec, bit_rate, audio_channels, sample_rate, output_path):
+        valid_codecs = {
+            "avi": ["av1", "h264", "h264(NVENC)"],
+            "mov": ["h264", "h264(NVENC)", "hevc", "hevc(NVENC)"],
+            "mkv": ["av1", "h264", "h264(NVENC)", "hevc", "hevc(NVENC)"],
+            "mp4": ["av1", "h264", "h264(NVENC)", "hevc", "hevc(NVENC)"]
+        }
+
+        if codec not in valid_codecs.get(video_format, []):
+            raise ValueError("选择的格式不正确Incorrect format selected")
+
         if not video_path:
             video_path = self.select_input_file()
 
@@ -100,6 +108,11 @@ class VideoFormatConverter:
         video_cap = cv2.VideoCapture(video_path)
         if not video_cap.isOpened():
             raise ValueError(f"{video_path} could not be loaded with cv.")
+        source_fps = video_cap.get(cv2.CAP_PROP_FPS)
+        source_width = int(video_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        source_height = int(video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        source_frame_count = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        source_duration = source_frame_count / source_fps
         original_bitrate = video_cap.get(cv2.CAP_PROP_BITRATE) / 1000
         video_cap.release()
 
@@ -143,27 +156,26 @@ class VideoFormatConverter:
 
         # Extract video information similar to load_video_nodes.py
         video_cap = cv2.VideoCapture(output_full_path)
-        fps = video_cap.get(cv2.CAP_PROP_FPS)
-        width = int(video_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        duration = total_frames / fps
+        loaded_fps = video_cap.get(cv2.CAP_PROP_FPS)
+        loaded_width = int(video_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        loaded_height = int(video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        loaded_frame_count = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        loaded_duration = loaded_frame_count / loaded_fps
         video_info = {
-            "source_fps": fps,
-            "source_frame_count": total_frames,
-            "source_duration": duration,
-            "source_width": width,
-            "source_height": height,
-            "loaded_fps": fps,
-            "loaded_frame_count": total_frames,
-            "loaded_duration": duration,
-            "loaded_width": width,
-            "loaded_height": height,
+            "source_fps": source_fps,
+            "source_frame_count": source_frame_count,
+            "source_duration": source_duration,
+            "source_width": source_width,
+            "source_height": source_height,
+            "loaded_fps": loaded_fps,
+            "loaded_frame_count": loaded_frame_count,
+            "loaded_duration": loaded_duration,
+            "loaded_width": loaded_width,
+            "loaded_height": loaded_height,
         }
         video_cap.release()
 
         return (video_info, output_full_path)
-
 
 # A dictionary that contains all nodes you want to export with their names
 NODE_CLASS_MAPPINGS = {

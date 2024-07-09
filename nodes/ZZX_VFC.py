@@ -36,8 +36,8 @@ class VideoFormatConverter:
             },
         }
 
-    RETURN_TYPES = ("STRING", "VHS_VIDEOINFO")
-    RETURN_NAMES = ("output_filename", "video_info")
+    RETURN_TYPES = ("VHS_VIDEOINFO", "STRING")
+    RETURN_NAMES = ("video_info", "output_filename")
     FUNCTION = "process_video"
 
     CATEGORY = "ZZX/Video"

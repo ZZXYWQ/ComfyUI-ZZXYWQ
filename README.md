@@ -1,3 +1,4 @@
+不会上传manager，很崩溃
 240709：Fix 2 Bugs
 
 I made a node for video transcoding and compression:

@@ -1,14 +1,14 @@
 [project]
-name = ""
+name = "ZZX nodes"
 description = "Node(s): VideoFormatConverter(VFC)"
 version = "1.0.0"
 license = "LICENSE"
 
 [project.urls]
-Repository = ""
+Repository = "https://github.com/ZZXYWQ/ComfyUI-ZZXYWQ"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
-DisplayName = "ComfyUI-AIT"
+PublisherId = "ZZXYWQ"
+DisplayName = "ComfyUI-ZZX"
 Icon = ""

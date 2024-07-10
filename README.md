@@ -1,14 +1,16 @@
 2.StreamRecorder
 
-A streaming media receives a local recording node
+A streaming media receives a local recording node:
+Streaming formats available: rtmp, .m3u8
 Optional formats: mp4, mov, mkv, avi
 Optional encoding: av1, h264, h265
 Optional: whether to use local time
-If yes, this start_time takes effect, the time inside is hours/minutes/seconds
+If yes, then this start_time takes effect, the time inside is hours/minutes/seconds
 Optional: recording time (slider)
 Optional: whether to use cuda
 
-一个流媒体收到录本地的节点
+一个流媒体收到录本地的节点：
+可输入流媒体格式：rtmp，.m3u8
 可选格式：mp4，mov，mkv，avi
 可选编码：av1，h264，h265
 可选:是否使用本地时间
@@ -27,7 +29,7 @@ Optional width and height: (not listed one by one)
 Optional audio: mp3, aac
 Optional frequency: 44100, 48000
 
-一个视频转码的节点:
+一个视频转码的节点：
 可选格式：mp4，mov，mkv，avi
 可选编码：av1，h264，h265
 可选帧率：8，15，24，25，30，50，59，60，120

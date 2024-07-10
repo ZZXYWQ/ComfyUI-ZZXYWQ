@@ -2,66 +2,63 @@
 
 A streaming media receives a local recording node:
 
-Streaming formats available: rtmp, .m3u8
+Streaming formats available: rtmp, .m3u8.
 
-Optional formats: mp4, mov, mkv, avi
+Optional formats: mp4, mov, mkv, avi.
 
-Optional encoding: av1, h264, h265
+Optional encoding: av1, h264, h265.
 
-Optional: whether to use local time,If yes, then this start_time takes effect, the time inside is hours/minutes/seconds
+Optional: whether to use local time,If yes, then this start_time takes effect, the time inside is hours/minutes/seconds.
 
-Optional: recording time (slider)
+Optional: recording time (slider).
 
-Optional: whether to use cuda
+Optional: whether to use cuda.
 
 一个流媒体收到录本地的节点：
 
-可输入流媒体格式：rtmp，.m3u8
+可输入流媒体格式：rtmp，.m3u8。
 
-可选格式：mp4，mov，mkv，avi
+可选格式：mp4，mov，mkv，avi。
 
-可选编码：av1，h264，h265
+可选编码：av1，h264，h265。
 
 可选:是否使用本地时间，
-     如果是，则这start_time生效，里面的时间是时/分/秒
+     如果是，则这start_time生效，里面的时间是时/分/秒。
      
-可选:录制时间（滑块）
+可选:录制时间（滑块）。
 
-可选:是否使用cuda
-
-
-
+可选:是否使用cuda。
 
 
 1.VideoFormatConverter：
 
 A video transcoding node:
 
-Optional formats: mp4, mov, mkv, avi
+Optional formats: mp4, mov, mkv, avi.
 
-Optional encoding: av1, h264, h265
+Optional encoding: av1, h264, h265.
 
-Optional frame rate: 8, 15, 24, 25, 30, 50, 59, 60, 120
+Optional frame rate: 8, 15, 24, 25, 30, 50, 59, 60, 120.
 
-Optional width and height: (not listed one by one)
+Optional width and height: (not listed one by one).
 
-Optional audio: mp3, aac
+Optional audio: mp3, aac.
 
-Optional frequency: 44100, 48000
+Optional frequency: 44100, 48000.
 
 一个视频转码的节点：
 
-可选格式：mp4，mov，mkv，avi
+可选格式：mp4，mov，mkv，avi。
 
-可选编码：av1，h264，h265
+可选编码：av1，h264，h265。
 
-可选帧率：8，15，24，25，30，50，59，60，120
+可选帧率：8，15，24，25，30，50，59，60，120。
 
-可选宽高：（不一一列举）
+可选宽高：（不一一列举）。
 
-可选音频：mp3，aac
+可选音频：mp3，aac。
 
-可选频率：44100，48000
+可选频率：44100，48000。
 
 
 0.

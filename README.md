@@ -8,6 +8,8 @@ Optional: whether to use local time,If yes, then this start_time takes effect, t
 Optional: recording time (slider).
 Optional: whether to use cuda.
 
+Friendly reminder: m3u8 takes a long time to store and is not very useful.
+
 一个流媒体收到录本地的节点：
 可输入流媒体格式：rtmp，.m3u8。
 可选格式：mp4，mov，mkv，avi。
@@ -16,6 +18,8 @@ Optional: whether to use cuda.
      如果是，则这start_time生效，里面的时间是时/分/秒。
 可选:录制时间（滑块）。
 可选:是否使用cuda。
+
+友情提示：m3u8存储时间长，不是很好用。
 
 
 1.VideoFormatConverter：

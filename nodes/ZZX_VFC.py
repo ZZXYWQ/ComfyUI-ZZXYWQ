@@ -34,8 +34,8 @@ class VideoFormatConverter:
             },
         }
 
-    RETURN_TYPES = ("VHS_VIDEOINFO", "STRING")
-    RETURN_NAMES = ("video_info", "output_filename")
+    RETURN_TYPES = ("STRING", "VHS_VIDEOINFO")
+    RETURN_NAMES = ("output_filename", "video_info")
     FUNCTION = "process_video"
 
     CATEGORY = "ZZX/Video"
@@ -175,7 +175,7 @@ class VideoFormatConverter:
         }
         video_cap.release()
 
-        return (video_info, output_full_path)
+        return (output_full_path, video_info)
 
 # A dictionary that contains all nodes you want to export with their names
 NODE_CLASS_MAPPINGS = {

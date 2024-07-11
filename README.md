@@ -18,8 +18,8 @@ Optional: whether to use cuda.
 可选:录制时间（滑块）。
 可选:是否使用cuda。
 
-AVI (avi): h264
-MOV (mov): h264, hevc\n
+AVI (avi): h264/
+MOV (mov): h264, hevc
 MKV (mkv): av1, h264, hevc
 MP4 (mp4): av1, h264, hevc
 HLS (hls): av1, h264, hevc

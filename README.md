@@ -66,7 +66,7 @@ Optional frequency: 44100, 48000.
 可选频率：44100，48000。
 
 
-I want say:
+welcome
 ==
 Options can be added to the above nodes,
 Please give feedback if you have any questions

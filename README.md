@@ -1,5 +1,7 @@
+ZZX Nodes
+++
 2.StreamRecorder
-
+==
 A streaming media receives a local recording node:
 Streaming formats available: rtmp, .m3u8.
 Optional formats: mp4, mov, mkv, avi.
@@ -43,9 +45,9 @@ RTMP (rtmp): h264
 RTSP (rtsp): h264, hevc
 
 M3U8 (m3u8): av1, h264, hevc
-======
-1.VideoFormatConverter：
 
+1.VideoFormatConverter：
+==
 A video transcoding node:
 Optional formats: mp4, mov, mkv, avi.
 Optional encoding: av1, h264, h265.

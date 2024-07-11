@@ -66,7 +66,8 @@ Optional frequency: 44100, 48000.
 可选频率：44100，48000。
 
 
-0.
+I want say:
+==
 Options can be added to the above nodes,
 Please give feedback if you have any questions
 

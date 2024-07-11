@@ -8,7 +8,6 @@ Optional: whether to use local time,If yes, then this start_time takes effect, t
 Optional: recording time (slider).
 Optional: whether to use cuda.
 
-Friendly reminder: m3u8 takes a long time to store and is not very useful.
 
 一个流媒体收到录本地的节点：
 可输入流媒体格式：rtmp，.m3u8。
@@ -19,8 +18,19 @@ Friendly reminder: m3u8 takes a long time to store and is not very useful.
 可选:录制时间（滑块）。
 可选:是否使用cuda。
 
-友情提示：m3u8存储时间长，不是很好用。
-
+AVI (avi): h264
+MOV (mov): h264, hevc\n
+MKV (mkv): av1, h264, hevc
+MP4 (mp4): av1, h264, hevc
+HLS (hls): av1, h264, hevc
+DASH (dash): av1, h264, hevc
+MSS (mss): av1, h264, hevc
+SRT (srt): h264, hevc
+FLV (flv): h264
+WebM (webm): av1, h264
+RTMP (rtmp): h264
+RTSP (rtsp): h264, hevc
+M3U8 (m3u8): av1, h264, hevc
 
 1.VideoFormatConverter：
 

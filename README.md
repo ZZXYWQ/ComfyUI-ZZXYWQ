@@ -18,20 +18,32 @@ Optional: whether to use cuda.
 可选:录制时间（滑块）。
 可选:是否使用cuda。
 
-AVI (avi): h264==
-MOV (mov): h264, hevc
-MKV (mkv): av1, h264, hevc
-MP4 (mp4): av1, h264, hevc
-HLS (hls): av1, h264, hevc
-DASH (dash): av1, h264, hevc
-MSS (mss): av1, h264, hevc
-SRT (srt): h264, hevc
-FLV (flv): h264
-WebM (webm): av1, h264
-RTMP (rtmp): h264
-RTSP (rtsp): h264, hevc
-M3U8 (m3u8): av1, h264, hevc
+AVI (avi): h264
 
+MOV (mov): h264, hevc
+
+MKV (mkv): av1, h264, hevc
+
+MP4 (mp4): av1, h264, hevc
+
+HLS (hls): av1, h264, hevc
+
+DASH (dash): av1, h264, hevc
+
+MSS (mss): av1, h264, hevc
+
+SRT (srt): h264, hevc
+
+FLV (flv): h264
+
+WebM (webm): av1, h264
+
+RTMP (rtmp): h264
+
+RTSP (rtsp): h264, hevc
+
+M3U8 (m3u8): av1, h264, hevc
+======
 1.VideoFormatConverter：
 
 A video transcoding node:

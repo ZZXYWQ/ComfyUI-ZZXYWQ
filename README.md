@@ -1,6 +1,35 @@
 ZZX Nodes
 =====
 
+ZZX_PaintsUndo
+==
+Original author https://github.com/lllyasviel/Paints-UNDO
+
+Reference to the original author's file, now you can undo the line drawing, set it to black if there is a problem.
+
+Known bugs:
+1. Three pictures will be output at a time.
+2. No coloring
+   
+The above two points are looking for problems, but you can use it simply
+
+Node file: ZZX_PaintsUndo.py, there are some comments and some attempts (some useless attempts were not deleted)
+
+
+原作者https://github.com/lllyasviel/Paints-UNDO
+
+引用原作者文件，现在可以撤销线稿，设置若有问题则输出为黑.
+
+已知bug：
+1. 一次会输出三张图。
+2. 不会上色
+   
+以上两点在找问题，但是大家可以简单使用
+   
+节点文件：ZZX_PaintsUndo.py，有一些注释和一些尝试（没删干净一些无用尝试）
+
+
+
 2.StreamRecorder
 ==
 A streaming media receives a local recording node:

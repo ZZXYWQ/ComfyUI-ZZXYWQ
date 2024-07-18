@@ -11,8 +11,11 @@ Known bugs:
 Three pictures will be output at a time.
 
 Plan:
+
 ✓Undo each part of the line drawing (picture)
+
 xUndo coloring (picture)
+
 x (video)
 
 Node file: ZZX_PaintsUndo.py, there are some comments and some attempts (some useless attempts were not deleted)
@@ -23,11 +26,14 @@ Node file: ZZX_PaintsUndo.py, there are some comments and some attempts (some us
 引用原作者文件，现在可以撤销线稿，设置若有问题则输出为黑.
 
 已知bug：
-1. 一次会输出三张图。
+一次会输出三张图。
 
 计划：
+
 ✓撤销成为 线稿各部分（图片）
+
 x撤销着色（图片）
+
 x（视频）
 
 节点文件：ZZX_PaintsUndo.py，有一些注释和一些尝试（没删干净一些无用尝试）

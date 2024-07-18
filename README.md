@@ -8,10 +8,12 @@ Original author https://github.com/lllyasviel/Paints-UNDO
 Reference to the original author's file, now you can undo the line drawing, set it to black if there is a problem.
 
 Known bugs:
-1. Three pictures will be output at a time.
-2. No coloring
-   
-The above two points are looking for problems, but you can use it simply
+Three pictures will be output at a time.
+
+Plan:
+✓Undo each part of the line drawing (picture)
+xUndo coloring (picture)
+x (video)
 
 Node file: ZZX_PaintsUndo.py, there are some comments and some attempts (some useless attempts were not deleted)
 
@@ -22,10 +24,12 @@ Node file: ZZX_PaintsUndo.py, there are some comments and some attempts (some us
 
 已知bug：
 1. 一次会输出三张图。
-2. 不会上色
-   
-以上两点在找问题，但是大家可以简单使用
-   
+
+计划：
+✓撤销成为 线稿各部分（图片）
+x撤销着色（图片）
+x（视频）
+
 节点文件：ZZX_PaintsUndo.py，有一些注释和一些尝试（没删干净一些无用尝试）
 
 

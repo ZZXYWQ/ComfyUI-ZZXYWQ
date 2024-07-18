@@ -1,5 +1,4 @@
 import os
-import subprocess
 import torch
 import numpy as np
 from PIL import Image
@@ -25,13 +24,11 @@ class ModifiedUNet(UNet2DConditionModel):
 class ZZX_PaintsUndo:
     def __init__(self):
         self.model_name = 'lllyasviel/paints_undo_single_frame'
-        self.custom_nodes_path = os.path.join(os.path.dirname(__file__), 'custom_nodes', 'ComfyUI-ZZXYWQ')
         self.tokenizer = None
         self.text_encoder = None
         self.vae = None
         self.unet = None
         self.k_sampler = None
-        self.download_files()
         self.initialize_models()
     
     @classmethod
@@ -39,31 +36,16 @@ class ZZX_PaintsUndo:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "prompt": ("STRING", {"default": ""}),
+                "Prompt": ("STRING", {"default": "", "multiline": True}),
                 "undo_steps": ("INT", {"default": 5, "min": 1, "max": 999, "step": 1}),
                 "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
-                "value_slider": ("FLOAT", {
-                    "default": 0.5,
-                    "min": 0.0,
-                    "max": 1.0,
-                    "step": 0.01,
-                    "display": "slider"
-                }),
             },
         }
 
-    RETURN_TYPES = ("IMAGE",)
+    RETURN_TYPES = ("IMAGE", "STRING")
+    RETURN_NAMES = ("image", "prompt")
     FUNCTION = "process_image"
     CATEGORY = "ZZX/PaintsUndo"
-
-    def download_files(self):
-        if not os.path.exists(self.custom_nodes_path):
-            os.makedirs(self.custom_nodes_path)
-        if not os.listdir(self.custom_nodes_path):
-            print("Downloading Paints-UNDO files...")
-            subprocess.run(['git', 'clone', 'https://github.com/lllyasviel/Paints-UNDO.git', self.custom_nodes_path])
-        else:
-            print("Paints-UNDO files already exist.")
 
     def initialize_models(self):
         os.environ['HF_HOME'] = os.path.join(os.path.dirname(__file__), 'hf_download')
@@ -87,36 +69,53 @@ class ZZX_PaintsUndo:
 
         unload_all_models([self.vae, self.text_encoder, self.unet])
 
-    def process_image(self, image, prompt, undo_steps, seed, value_slider):
+    def process_image(self, image, Prompt, undo_steps, seed):
         print("Starting process_image method")
         pil_image = Image.fromarray(np.clip(255. * image[0].cpu().numpy(), 0, 255).astype(np.uint8))
-    
-        if not prompt:
-            prompt = default_interrogator(pil_image)
-    
+        
+        generated_prompt = ""
+        if not Prompt:
+            generated_prompt = default_interrogator(pil_image)
+            Prompt = generated_prompt
+        
         print(f"Input image shape: {np.array(pil_image).shape}")
-        print(f"Prompt: {prompt}")
+        print(f"Prompt: {Prompt}")
         print(f"Undo steps: {undo_steps}")
         print(f"Seed: {seed}")
-        print(f"Value slider: {value_slider}")
-    
-        results = self.paints_undo_process(pil_image, prompt, undo_steps, seed, value_slider)
         
-        # 选择中间的图像
-        mid_index = len(results) // 2
-        selected_image = results[mid_index]
+        result = self.paints_undo_process(pil_image, Prompt, undo_steps, seed)
         
-        print(f"Selected image shape: {selected_image.shape}")
-    
+        print(f"Result shape after paints_undo_process: {result.shape}")
+        
+        # 处理可能的 BGR 输出
+        if result.shape[0] == 3:
+            print("Detected 3-channel output, assuming BGR order")
+            result = result[::-1]  # 反转通道顺序从 BGR 到 RGB
+            result = np.transpose(result, (1, 2, 0))  # 从 [C, H, W] 转换到 [H, W, C]
+        elif result.ndim == 3 and result.shape[2] == 3:
+            print("Result is already in [H, W, C] format")
+        else:
+            print(f"Unexpected result shape: {result.shape}")
+            # 如果形状不符合预期，可以尝试其他处理方法，或者引发一个错误
+
+        # 确保结果是 [H, W, C] 格式的 numpy 数组
+        if result.ndim == 2:
+            result = np.stack([result] * 3, axis=-1)  # 如果是灰度图，转换为RGB
+        elif result.shape[2] == 1:
+            result = np.repeat(result, 3, axis=2)  # 如果是单通道，重复三次得到RGB
+        
         # 转换为 ComfyUI 期望的格式：[C, H, W] 的 torch.Tensor，值范围 0-1
-        output_image = torch.from_numpy(selected_image).float().permute(2, 0, 1) / 255.0
-    
+        output_image = torch.from_numpy(result).float().permute(2, 0, 1) / 255.0
+        
         print(f"Final output image shape: {output_image.shape}")
         print(f"Final output image min/max values: {output_image.min()}, {output_image.max()}")
-    
-        return (output_image,)
+        
+        # 决定输出的prompt
+        output_prompt = Prompt if Prompt else generated_prompt
+        
+        return (output_image, output_prompt)
 
-    def paints_undo_process(self, image, prompt, undo_steps, seed, value_slider):
+    def paints_undo_process(self, image, prompt, undo_steps, seed):
         print("Starting paints_undo_process method")
         load_models_to_gpu([self.vae, self.text_encoder, self.unet])
 
@@ -138,8 +137,8 @@ class ZZX_PaintsUndo:
             initial_latent=torch.zeros_like(concat_conds),
             strength=0.8,
             num_inference_steps=30,
-            guidance_scale=value_slider * 10,
-            batch_size=3,  # 输出三张图
+            guidance_scale=7.5,
+            batch_size=1,
             generator=generator,
             prompt_embeds=conds,
             negative_prompt_embeds=unconds,
@@ -158,12 +157,11 @@ class ZZX_PaintsUndo:
 
         unload_all_models([self.vae, self.text_encoder, self.unet])
 
-        final_images = [(img * 255).astype(np.uint8) for img in images]
-        for i, img in enumerate(final_images):
-            print(f"Final image {i+1} shape: {img.shape}")
-            print(f"Final image {i+1} min/max values: {img.min()}, {img.max()}")
+        final_image = (images[0] * 255).astype(np.uint8)
+        print(f"Final image shape: {final_image.shape}")
+        print(f"Final image min/max values: {final_image.min()}, {final_image.max()}")
         
-        return final_images
+        return final_image
 
     def encode_prompt(self, prompt):
         text_inputs = self.tokenizer(
@@ -179,8 +177,4 @@ class ZZX_PaintsUndo:
 
 NODE_CLASS_MAPPINGS = {
     "ZZX_PaintsUndo": ZZX_PaintsUndo
-}
-
-NODE_DISPLAY_NAME_MAPPINGS = {
-    "ZZX_PaintsUndo": "ZZX Paints Undo Node"
 }

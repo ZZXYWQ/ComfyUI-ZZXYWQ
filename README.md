@@ -3,6 +3,9 @@ ZZX Nodes
 
 ZZX_PaintsUndo
 ==
+
+![menu](workflows/PaintsUndo.png)
+
 Original author https://github.com/lllyasviel/Paints-UNDO
 
 Reference to the original author's file, now you can undo the line drawing, set it to black if there is a problem.

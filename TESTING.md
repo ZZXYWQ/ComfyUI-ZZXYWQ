@@ -49,3 +49,35 @@ inside the declared ranges are not individually certified. The model simulates
 drawing history and may redraw details; strict pixelwise monotonic removal is
 not guaranteed. Multi-frame video interpolation remains in the upstream reference
 source and is not part of this lightweight ComfyUI node.
+
+
+# Video utilities v1.2 validation — 2026-10-23
+
+Windows, Python 3.12.14, FFmpeg 2026-02-23 (Gyan full build).
+`python -m unittest discover -s tests -v`: **16 passed**, including the five
+existing Paints-Undo regressions. Video-only tests need no model dependencies:
+`python -m unittest discover -s tests -p test_video.py -v`.
+
+Real media tests generate a one-second H.264/AAC test clip and verify:
+
+- MP4 conversion with crop/fill, copied audio, AAC and MP3; original channel mode.
+- Silent input; output dimensions, frame count, frame rate and VHS metadata.
+- Recording to MP4, MOV, MKV, AVI, FLV, MPEG-TS, HLS, DASH and AV1/Opus WebM.
+- Recording an HLS playlist served by a local HTTP server into MP4.
+- Repeated HLS output preserves existing segment contents.
+- Missing input removes the reserved incomplete recording.
+
+Contract tests cover disabled output tuple length, valid UI defaults, legacy
+format aliases, invalid formats/durations/schedules, unique output filenames,
+missing executable diagnostics, unknown probe rates and cancellation of a real
+sleeping child process (child termination confirmed).
+
+Additional actual hardware checks passed: HEVC and AV1 software conversion,
+H.264 and HEVC NVENC conversion (each returned 24 frames at 320×320), and CUDA
+decode + H.264 NVENC recording on the available NVIDIA GPU.
+
+A standalone Linux CI job now runs the video tests using system FFmpeg. Its
+remote result is separate from the local Windows results above. These video
+changes have not been tested through a live ComfyUI browser/session. Public
+RTMP/RTSP endpoints, long recordings and all GPU/driver combinations were not
+tested. HLS and DASH playback were checked with ffprobe, not a browser player.

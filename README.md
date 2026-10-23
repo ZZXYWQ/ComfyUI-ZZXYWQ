@@ -1,4 +1,4 @@
-# ZZX Nodes — Paints-Undo for ComfyUI
+# ZZX Nodes — Paints-Undo 与视频工具
 
 把成图逐步撤销为少上色、线稿、少笔画的关键帧序列。使用原版 Paints-Undo 模型推理，不是褪色或擦除滤镜。
 
@@ -73,77 +73,33 @@ python scripts/render_example.py
 
 模型及核心采样/条件模块来自 [lllyasviel/Paints-UNDO](https://github.com/lllyasviel/Paints-UNDO)，上游许可证保留于 `Paints-UNDO/LICENSE`。原版 Gradio 和视频源码保留以便参考，但不会在节点加载时导入。
 
-## 其他原有工具
+## 视频转码与流录制（v1.2）
 
-2.StreamRecorder
-==
-A streaming media receives a local recording node:
-Streaming formats available: rtmp, .m3u8.
-Optional formats: mp4, mov, mkv, avi.
-Optional encoding: av1, h264, h265.
-Optional: whether to use local time,If yes, then this start_time takes effect, the time inside is hours/minutes/seconds.
-Optional: recording time (slider).
-Optional: whether to use cuda.
+这两个节点只需要 Python 标准库与系统 **FFmpeg + ffprobe**，无需 Tkinter、OpenCV 或显卡。把工具加入 PATH，或设置 `ZZX_FFMPEG` / `ZZX_FFPROBE` 为可执行文件完整路径。重启 ComfyUI 后生效。
 
+### VideoFormatConverter
 
-一个流媒体收到录本地的节点：
-可输入流媒体格式：rtmp，.m3u8。
-可选格式：mp4，mov，mkv，avi。
-可选编码：av1，h264，h265。
-可选:是否使用本地时间，
-     如果是，则这start_time生效，里面的时间是时/分/秒。
-可选:录制时间（滑块）。
-可选:是否使用cuda。
+导入 `workflows/workflow-VideoFormatConverter.json`，填写服务器上的 `video_path` 后执行。输出完整文件路径和兼容 VideoHelperSuite 的 `VHS_VIDEOINFO`；仅运行转码不需要安装 VideoHelperSuite。
 
-AVI (avi): h264
+- `output_path` 是目录；留空使用 ComfyUI/output。自动创建目录并使用递增文件名，避免覆盖已有文件。
+- `output_filename` 只填写文件名，不包含路径；留空使用输入视频名称。
+- `fill` 拉伸到目标宽高；`crop` 保持比例放大后居中裁剪。输出像素宽高比为 1:1。
+- `audio_codec=copy` 保留音轨，忽略音频码率、声道和采样率；原音轨必须与目标容器兼容。其他模式下 `original` 保持原声道数；无音轨视频也可转码。
+- `output_enabled=false` 返回空路径与空信息字典，不执行转码。
+- `opencl_acceleration` 为兼容旧工作流保留，已不再启用无效的 OpenCL 解码路径。需要 GPU 编码时选择 NVENC。
 
-MOV (mov): h264, hevc
+### StreamRecorder
 
-MKV (mkv): av1, h264, hevc
+导入 `workflows/workflow-StreamRecorder.json`，填写可访问的 HTTP(S)/HLS、RTMP、RTSP 等输入地址；也支持本地视频路径。默认录制一分钟，使用 CPU H.264。输出录制文件完整路径，可连接转码节点。
 
-MP4 (mp4): av1, h264, hevc
+- `use_local_time=true` 时按 **ComfyUI 服务器本地时间**等待 `HH/MM/SS` 或 `HH:MM:SS`；当天已过去的时间会报错。等待期间占用当前执行任务，可取消。
+- 支持 MP4、MOV、MKV、AVI、FLV、WebM、HLS 与 DASH；WebM 使用 AV1 + Opus，其他录制格式转为 AAC 音频。
+- HLS 输出 `.m3u8` 与独立编号的 `.ts` 分段；DASH 输出 `.mpd` 与 `.m4s` 分段。移动时需保留整套文件。
+- 旧值 `m3u8/http/https` 映射为 HLS，`rtmp` 映射为 FLV，`srt/rtsp` 保存为 MPEG-TS（`.ts`）。这些选项只决定本地文件容器，不向远端推流。原来无法正确工作的 `mss` 已移除，旧工作流请改用 MP4 或 DASH。
+- `use_cuda` 控制硬件解码；NVENC 编码单独由 `codec` 控制。需要支持的 NVIDIA 显卡、驱动与 FFmpeg 构建，失败时会明确报错，不会悄悄改用其他编码器。
 
-HLS (hls): av1, h264, hevc
+两个节点的 `video_quality` 统一为 CRF/CQ，**数字越小画质越高、文件通常越大**，建议从 23 开始。旧工作流参数会保留，但相同数字不再沿用原来方向不一致的码率公式。
 
-DASH (dash): av1, h264, hevc
+两者均为输出节点，每次排队执行都会写出新文件，支持 ComfyUI 的取消操作。录制网络读取设有 15 秒超时，整体设有“录制时长 + 60 秒”的上限；极慢的软件编码可能触发这个上限。失败或取消时删除本次未完成的输出。帧数在容器未提供时按时长与帧率估算，可变帧率素材的估算值可能不同于精确解码计数。
 
-MSS (mss): av1, h264, hevc
-
-SRT (srt): h264, hevc
-
-FLV (flv): h264
-
-WebM (webm): av1, h264
-
-RTMP (rtmp): h264
-
-RTSP (rtsp): h264, hevc
-
-M3U8 (m3u8): av1, h264, hevc
-
-1.VideoFormatConverter：
-==
-A video transcoding node:
-Optional formats: mp4, mov, mkv, avi.
-Optional encoding: av1, h264, h265.
-Optional frame rate: 8, 15, 24, 25, 30, 50, 59, 60, 120.
-Optional width and height: (not listed one by one).
-Optional audio: mp3, aac.
-Optional frequency: 44100, 48000.
-
-一个视频转码的节点：
-可选格式：mp4，mov，mkv，avi。
-可选编码：av1，h264，h265。
-可选帧率：8，15，24，25，30，50，59，60，120。
-可选宽高：（不一一列举）。
-可选音频：mp3，aac。
-可选频率：44100，48000。
-
-
-welcome
-==
-Options can be added to the above nodes,
-Please give feedback if you have any questions
-
-以上节点均可添加选项，
-有问题请反馈
+FFmpeg 参数及容器规则参考[官方命令文档](https://ffmpeg.org/ffmpeg.html)和[格式文档](https://ffmpeg.org/ffmpeg-formats.html)。

@@ -9,6 +9,7 @@ import onnxruntime as ort
 from PIL import Image
 from onnxruntime import InferenceSession
 from torch.hub import download_url_to_file
+from pathlib import Path
 
 
 global_model = None
@@ -25,19 +26,21 @@ def download_model(url, local_path):
     return local_path
 
 
-def default_interrogator(image, threshold=0.35, character_threshold=0.85, exclude_tags=""):
+def default_interrogator(image, threshold=0.35, character_threshold=0.85, exclude_tags="", cache_dir=None):
     global global_model, global_csv
 
     model_name = "wd-v1-4-moat-tagger-v2"
+    cache_dir = Path(cache_dir or Path(__file__).parent / "hf_download" / "tagger")
+    cache_dir.mkdir(parents=True, exist_ok=True)
 
     model_onnx_filename = download_model(
         url=f'https://huggingface.co/lllyasviel/misc/resolve/main/{model_name}.onnx',
-        local_path=f'./{model_name}.onnx',
+        local_path=str(cache_dir / f'{model_name}.onnx'),
     )
 
     model_csv_filename = download_model(
         url=f'https://huggingface.co/lllyasviel/misc/resolve/main/{model_name}.csv',
-        local_path=f'./{model_name}.csv',
+        local_path=str(cache_dir / f'{model_name}.csv'),
     )
 
     if global_model is not None:

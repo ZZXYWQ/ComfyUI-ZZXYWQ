@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+hf_download/
+outputs/
+.venv313/

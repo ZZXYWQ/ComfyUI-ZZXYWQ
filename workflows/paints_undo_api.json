@@ -1,0 +1,36 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "paints_undo_example.jpg"
+    }
+  },
+  "2": {
+    "class_type": "ZZX_PaintsUndoSequence",
+    "inputs": {
+      "image": [
+        "1",
+        0
+      ],
+      "prompt": "",
+      "operations": "400,600,800,900,950,999",
+      "seed": 12345,
+      "sampling_steps": 30,
+      "cfg": 3.0,
+      "resolution": 640,
+      "include_original": true,
+      "include_blank": true,
+      "negative_prompt": "lowres, bad anatomy, bad hands, cropped, worst quality"
+    }
+  },
+  "3": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "2",
+        0
+      ],
+      "filename_prefix": "PaintsUndo/sequence"
+    }
+  }
+}

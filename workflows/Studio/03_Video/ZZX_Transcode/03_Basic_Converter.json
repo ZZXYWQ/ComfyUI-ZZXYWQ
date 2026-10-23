@@ -1,0 +1,63 @@
+{
+  "last_node_id": 1,
+  "last_link_id": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "VideoFormatConverter",
+      "pos": [
+        100,
+        100
+      ],
+      "size": [
+        480,
+        650
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "output_filename",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 0
+        },
+        {
+          "name": "video_info",
+          "type": "VHS_VIDEOINFO",
+          "links": null,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VideoFormatConverter"
+      },
+      "widgets_values": [
+        "",
+        "true",
+        "",
+        "mp4",
+        "h264",
+        23,
+        "25",
+        "disable",
+        "1280",
+        "720",
+        "bicubic",
+        "fill",
+        "aac",
+        "192",
+        "stereo",
+        "48000",
+        ""
+      ]
+    }
+  ],
+  "links": [],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

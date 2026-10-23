@@ -1,0 +1,196 @@
+{
+  "last_node_id": 3,
+  "last_link_id": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "ZZX_AudioSubtitleSettings",
+      "pos": [
+        30,
+        60
+      ],
+      "size": [
+        440,
+        470
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "audio_subtitles",
+          "type": "ZZX_AUDIO_SETTINGS",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ZZX_AudioSubtitleSettings"
+      },
+      "widgets_values": [
+        "auto",
+        "first",
+        192,
+        0,
+        "original",
+        0,
+        false,
+        "none",
+        0,
+        "",
+        "und"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "ZZX_VideoSettings",
+      "pos": [
+        520,
+        60
+      ],
+      "size": [
+        440,
+        530
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio_subtitles",
+          "type": "ZZX_AUDIO_SETTINGS",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "settings",
+          "type": "ZZX_TRANSCODE_SETTINGS",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "preset_json",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ZZX_VideoSettings"
+      },
+      "widgets_values": [
+        "mp4",
+        "libx264",
+        "quality",
+        23,
+        4000,
+        "balanced",
+        0,
+        0,
+        "fit",
+        "lanczos",
+        0,
+        0,
+        0,
+        1,
+        "none",
+        "none",
+        0,
+        0,
+        0,
+        0,
+        false,
+        0,
+        0,
+        0,
+        1,
+        1,
+        "auto",
+        "",
+        0,
+        "keep",
+        "{}"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "ZZX_VideoConvertAdvanced",
+      "pos": [
+        1010,
+        60
+      ],
+      "size": [
+        440,
+        290
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "settings",
+          "type": "ZZX_TRANSCODE_SETTINGS",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output_path",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 0
+        },
+        {
+          "name": "video_info",
+          "type": "VHS_VIDEOINFO",
+          "links": null,
+          "slot_index": 1
+        },
+        {
+          "name": "report_json",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ZZX_VideoConvertAdvanced"
+      },
+      "widgets_values": [
+        "",
+        "Custom",
+        "",
+        "",
+        ""
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "ZZX_AUDIO_SETTINGS"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "ZZX_TRANSCODE_SETTINGS"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

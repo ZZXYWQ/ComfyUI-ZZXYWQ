@@ -10,6 +10,8 @@
 
 导入 `workflows/workflow-AdvancedVideoConverter.json` 或 `workflow-BatchVideoConverter.json`。详细用法与限制见 **[高级转码指南](TRANSCODING.md)**。
 
+需要加入 ComfyUI 工作流侧栏时，使用[按功能分类的 Studio 工作流包](workflows/Studio/README.md)，内含高级／批量／基础转码与流录制。
+
 ## 安装
 
 在 ComfyUI 的 `custom_nodes` 目录克隆本仓库，然后使用 **运行 ComfyUI 的 Python** 安装根目录依赖并重启：

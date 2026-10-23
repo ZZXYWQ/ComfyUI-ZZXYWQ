@@ -1,0 +1,52 @@
+{
+  "last_node_id": 1,
+  "last_link_id": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "StreamRecorder",
+      "pos": [
+        100,
+        100
+      ],
+      "size": [
+        480,
+        650
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "output_filename",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StreamRecorder"
+      },
+      "widgets_values": [
+        "",
+        "false",
+        "23/44/14",
+        0,
+        1,
+        0,
+        "",
+        "mp4",
+        "h264",
+        23,
+        "false",
+        ""
+      ]
+    }
+  ],
+  "links": [],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

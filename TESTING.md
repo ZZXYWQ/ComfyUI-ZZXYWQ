@@ -34,6 +34,27 @@ Environment A's contact sheet is included in `workflows/PaintsUndo-sequence-exam
 This is actual GPU inference and server-side workflow execution, not only mocked tests.
 The UI workflow JSON is supplied separately from the API JSON.
 
+## Installed ComfyUI Studio verification
+
+The actual Studio installation was also tested on 2026-10-23:
+`D:\ComfyUI_Studio\ComfyUI_windows_portable` (not the separate validation checkout).
+ComfyUI 0.41.0, Python 3.13.14, PyTorch 2.14.0+cu130,
+Diffusers 0.41.0, Transformers 5.17.0.
+
+An initially incomplete local `models/paints_undo/single_frame` directory caused
+missing-weight errors. Existing complete model files from the earlier validation
+cache were checked against the model repository's SHA256 manifest and copied to
+the Studio model directory; no redownload or inference-code change was needed.
+
+- Replayed the user's previously failing single-frame workflow on Studio's
+  running server: `execution_success`, 11.13 seconds.
+- Ran the installed sequence/video workflow: `execution_success`, 27.57 seconds,
+  eight 512×640 PNG frames plus a four-second, 2 FPS MP4 preview.
+- No private user input or generated user image is included in this repository.
+
+The plugin resolves models relative to the running ComfyUI installation. Updating
+this GitHub repository does not copy weights or dependencies into other installs.
+
 ## Regression tests
 
 `python -m unittest discover -s tests -v`: **5 passed** in both environments.

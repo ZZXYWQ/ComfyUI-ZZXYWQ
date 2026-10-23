@@ -21,6 +21,16 @@ python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\ComfyUI-ZZXYWQ\
 
 不需要安装 `Paints-UNDO/requirements.txt`；该文件只供保留的上游 Gradio/视频实验代码使用。节点主流程不依赖 Gradio、xformers、bitsandbytes、PEFT 或视频模型。
 
+## 多套 ComfyUI / Studio 安装注意
+
+GitHub 更新只更新代码，不会把模型和依赖同步到其他 ComfyUI 安装。安装依赖、节点和模型时必须使用正在运行的那一套目录与 Python。
+
+例如 Studio 位于 `D:\ComfyUI_Studio\ComfyUI_windows_portable` 时，模型应在该目录的 `ComfyUI/models/paints_undo`，不能假定旧的 `D:\ComfyUI_windows_portable` 与它共用模型。可用 `PAINTS_UNDO_MODEL_DIR` 显式指定已有完整模型缓存。
+
+遇到 `no file named model.safetensors` 等错误时，检查 `single_frame/text_encoder/model.safetensors`、`single_frame/unet/diffusion_pytorch_model.safetensors` 和 `single_frame/vae/diffusion_pytorch_model.safetensors` 是否下载完整；仅有 config.json 或临时下载文件不够。`single_frame` 目录存在时节点会使用这套本地模型。不要把缺权重误当成节点已完成安装。
+
+Studio 实际运行环境及回归结果见 [TESTING.md](TESTING.md#installed-comfyui-studio-verification)。
+
 ## 使用
 
 导入 `workflows/workflow-PaintsUndoSequence.json`，在 Load Image 选择自己的图片，然后运行：

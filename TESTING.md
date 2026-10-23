@@ -98,7 +98,35 @@ H.264 and HEVC NVENC conversion (each returned 24 frames at 320×320), and CUDA
 decode + H.264 NVENC recording on the available NVIDIA GPU.
 
 A standalone Linux CI job now runs the video tests using system FFmpeg. Its
-remote result is separate from the local Windows results above. These video
-changes have not been tested through a live ComfyUI browser/session. Public
-RTMP/RTSP endpoints, long recordings and all GPU/driver combinations were not
-tested. HLS and DASH playback were checked with ffprobe, not a browser player.
+remote result is separate from the local Windows results above. Public RTMP/RTSP endpoints, long recordings and all GPU/driver combinations
+were not tested. HLS and DASH playback were checked with ffprobe, not a browser player.
+
+
+## ComfyUI Studio live API integration
+
+Validated in the user's installed portable environment on 2026-10-23:
+ComfyUI 0.41.0, frontend 1.55.17, embedded Python 3.13.14,
+PyTorch 2.14.0+cu130, NVIDIA RTX 5000 Ada. The installed ZZX extension was
+updated from 1.1.0 to 1.2.0 after backing up changed files.
+
+All 16 regressions passed under the embedded Python. The test imports were
+fixed to use the extension's package name, avoiding a collision with ComfyUI's
+own `nodes.py` in portable Python's search path.
+
+An independent localhost server on port 8189 used the installed ComfyUI and
+Python, loading ZZX and VideoHelperSuite with assets disabled to avoid the
+active server's database lock. Actual `/prompt` and `/history` executions verified:
+
+- CPU conversion and re-queuing the same graph creates separate outputs.
+- CUDA/NVENC recording → HEVC NVENC conversion → VHS video loading → PreviewImage.
+- Converter `VHS_VIDEOINFO` → VHS_VideoInfo → EmptyImage → PreviewImage.
+- HLS, DASH, WebM and HTTP HLS recording; produced files verified with ffprobe.
+- Missing input reports an execution error and leaves no partial output.
+- Interrupting a scheduled recording exits without creating a file.
+- Interrupting active FFmpeg waiting on UDP reports `execution_interrupted`,
+  terminates the observed child PID, and removes partial output.
+
+All **11 API cases** met their expected success/error/interruption outcomes.
+The pre-existing 8188 service was left running; it needs a restart to load the
+updated modules. This checks server execution and preview generation, not manual
+browser interaction or compatibility with every other installed extension.

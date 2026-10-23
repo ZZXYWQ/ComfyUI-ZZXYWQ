@@ -1,4 +1,5 @@
 import functools
+import importlib
 import http.server
 import json
 import os
@@ -11,10 +12,11 @@ import threading
 import unittest
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from nodes import video_utils as media
-from nodes.ZZX_VFC import VideoFormatConverter
-from nodes.ZZX_Stream import StreamRecorder
+root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(root.parent))
+media = importlib.import_module(root.name + ".nodes.video_utils")
+VideoFormatConverter = importlib.import_module(root.name + ".nodes.ZZX_VFC").VideoFormatConverter
+StreamRecorder = importlib.import_module(root.name + ".nodes.ZZX_Stream").StreamRecorder
 
 
 def convert(source, directory, **changes):

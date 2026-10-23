@@ -130,3 +130,61 @@ All **11 API cases** met their expected success/error/interruption outcomes.
 The pre-existing 8188 service was left running; it needs a restart to load the
 updated modules. This checks server execution and preview generation, not manual
 browser interaction or compatibility with every other installed extension.
+
+
+# Advanced transcode v1.3 — 2026-10-24
+
+Validated in `D:/ComfyUI_Studio/ComfyUI_windows_portable` using ComfyUI 0.41.0,
+frontend 1.55.17, embedded Python 3.13.14, PyTorch 2.14.0+cu130 and RTX 5000 Ada.
+Existing installed files were backed up before updating. The existing server
+on port 8188 was not stopped. A dedicated server on 8189 loaded ZZX and VHS;
+assets were disabled only on that test server to avoid the shared database lock.
+
+## Regression and real media
+
+**33 tests passed** under the installed embedded Python: 17 advanced-transcode,
+11 original video and 5 Paints-Undo regression tests. New tests cover:
+
+- Preset precedence, JSON validation, safe extra encoding options, preset save/load.
+- Legacy input/output contracts; automatic encoder fallback.
+- Crop/fit/pad/stretch, rotation, trim, synchronized speed and picture filters.
+- Multiple audio tracks, extraction, loudness, channel count and sample rate.
+- Embedded/external subtitle muxing and burn-in with spaces, Unicode and apostrophes in paths.
+- VBR, CBR and two-pass output; ProRes, FFV1, MPEG-4, MPEG-2, VP9, Theora,
+  GIF, MPEG-TS, HLS and DASH, verified by ffprobe.
+- Batch success/failure reporting and preserved subfolders, metadata stripping,
+  dotted filenames and failure cleanup.
+
+## Live queue and frontend
+
+`scripts/test_transcode_api.py` completed **21 API scenarios** through actual
+`/prompt` and `/history`: capabilities, H.264, automatic H.264/AV1, HEVC NVENC
+10-bit, SVT-AV1, VP9 WebM, ProRes, FFV1, remux, GIF, FLAC extraction, two-pass,
+subtitle embedding, settings → subtitle burn-in → VHS preview, legacy → advanced
+conversion, preset save/load, partial batch failure, expected invalid-copy error,
+and active-encoding cancellation. Cancellation confirmed the child FFmpeg PID
+exited and the partial output was deleted.
+
+The browser also imported the shipped advanced workflow and executed it through
+Run. Confirmed the advanced input toggle and the populated result textarea in
+frontend 1.55.17. Fixed a custom DOM widget incompatibility by using the standard
+Comfy multiline string widget. A decoded subtitle frame was visually inspected:
+text is visible inside the padded 320×320 image after seek and speed change.
+
+Hardware smoke tests successfully encoded H.264, HEVC and AV1 with NVENC. QSV and
+AMF are compiled into this FFmpeg but are unavailable on this machine; no Intel
+or AMD hardware compatibility claim is made. The detector uses a 256×256 frame
+because the tested NVENC driver rejects smaller dimensions.
+
+The API harness requires a dedicated idle server, VHS and the tested NVIDIA
+encoders. It writes real outputs and issues `/interrupt`; do not point it at a
+server running other jobs. Example:
+
+```sh
+python scripts/test_transcode_api.py --url http://127.0.0.1:8189 --output /path/to/test-output
+```
+
+Linux CI includes both video test modules; the results above are Windows results.
+Not every codec/container/profile combination is tested. HDR tone mapping,
+bitmap subtitle OCR, custom subtitle attachment fonts, long-duration workloads
+and exact CFR/CBR behavior across all encoders are outside this validation.

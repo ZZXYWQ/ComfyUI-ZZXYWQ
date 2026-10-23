@@ -41,11 +41,11 @@ def executable(name):
     return found
 
 
-def run_process(command, timeout=None):
+def run_process(command, timeout=None, cwd=None):
     """Poll cancellation without pipe deadlocks or unbounded RAM for FFmpeg logs."""
     check_interrupt()
     with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
-        with subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
+        with subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, cwd=cwd,
                               creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)) as process:
             started = time.monotonic()
             try:
@@ -146,8 +146,8 @@ def remove_failed_output(path, video_format):
                 candidate.unlink(missing_ok=True)
 
 
-def probe(path):
-    raw = run_process([executable("ffprobe"), "-v", "error", "-select_streams", "v:0",
+def probe(path, stream_selector="v:0"):
+    raw = run_process([executable("ffprobe"), "-v", "error", "-select_streams", stream_selector,
                        "-show_streams", "-show_format", "-of", "json", str(path)], timeout=30)
     data = json.loads(raw)
     if not data.get("streams"):

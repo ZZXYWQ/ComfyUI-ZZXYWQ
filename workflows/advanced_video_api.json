@@ -1,0 +1,11 @@
+{
+  "1": {
+    "class_type": "ZZX_VideoConvertAdvanced",
+    "inputs": {
+      "video_path": "REPLACE_WITH_SERVER_VIDEO_PATH",
+      "preset": "MP4 H.264 - compatible",
+      "output_path": "",
+      "output_filename": "converted"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "resize_mode": "pad",
+  "video_encoder": "libx264",
+  "quality": 23
+}

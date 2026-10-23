@@ -1,0 +1,6 @@
+{
+  "container": "mp3",
+  "video_encoder": "none",
+  "audio_encoder": "libmp3lame",
+  "audio_bitrate_kbps": 192
+}

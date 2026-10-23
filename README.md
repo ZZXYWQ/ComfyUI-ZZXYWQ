@@ -4,6 +4,12 @@
 
 ![Actual inference example](workflows/PaintsUndo-sequence-example.jpg)
 
+## 新增：高级转码与批量处理（v1.3）
+
+新增单文件／批量转码、视频设置、音频字幕、JSON 预设和媒体信息六个节点。支持更多容器与编码、NVENC/QSV/AMF 检测、两遍编码、画面调整、音频提取、字幕封装／烧录；旧节点和旧工作流保留。
+
+导入 `workflows/workflow-AdvancedVideoConverter.json` 或 `workflow-BatchVideoConverter.json`。详细用法与限制见 **[高级转码指南](TRANSCODING.md)**。
+
 ## 安装
 
 在 ComfyUI 的 `custom_nodes` 目录克隆本仓库，然后使用 **运行 ComfyUI 的 Python** 安装根目录依赖并重启：

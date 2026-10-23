@@ -4,7 +4,8 @@ import logging
 
 NODE_CLASS_MAPPINGS = {}
 NODE_DISPLAY_NAME_MAPPINGS = {}
-for module in ("Paints-UNDO.ZZX_PaintsUndo", "nodes.ZZX_VFC", "nodes.ZZX_Stream"):
+WEB_DIRECTORY = "./web"
+for module in ("Paints-UNDO.ZZX_PaintsUndo", "nodes.ZZX_VFC", "nodes.ZZX_Stream", "nodes.ZZX_Transcode"):
     try:
         loaded = importlib.import_module("." + module, __name__)
         NODE_CLASS_MAPPINGS.update(loaded.NODE_CLASS_MAPPINGS)

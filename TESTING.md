@@ -62,6 +62,25 @@ These lightweight tests use fake models to verify invalid operation/input reject
 lazy node construction, RGB batch layout, chronological operation order, shared
 seed behavior, and model offload after failure. They do not evaluate model quality.
 
+## Windows console regression (2026-10-24)
+
+A Studio session with Manager enabled failed in Transformers' `Loading weights`
+progress bar: the wrapped stderr stream raised `OSError(22, 'Invalid argument')`.
+CLIP loading now disables that progress display temporarily and restores both
+Transformers and Hugging Face Hub progress settings in `finally`, including when
+loading fails. Weight-loading errors still propagate normally.
+
+The six regression tests cover a stderr stream that raises this exact error,
+all four combinations of the two progress settings, and restoration after errors.
+The actual CLIP checkpoint (115,972,608 parameters) also loaded successfully
+with stderr forced to raise OSError(22). Full real-model inference using Studio
+Python and Studio weights produced eight finite RGB frames `[8,640,512,3]`.
+This validation ran in a fresh process; the existing UI server was not restarted.
+
+Restart ComfyUI after updating the node: an already-running server retains the
+old imported Python code. If other nodes also report console/logging errors,
+restart from the Studio launcher with a valid console or log-file redirection.
+
 ## Limits
 
 CUDA was tested. CPU fallback exists but full CPU inference was not benchmarked.

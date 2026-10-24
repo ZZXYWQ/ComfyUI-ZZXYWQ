@@ -40,11 +40,32 @@ def prepare_image(image, resolution):
     return pil.resize(size, Image.Resampling.LANCZOS)
 
 
+def load_clip_text_encoder(source, **options):
+    from transformers import CLIPTextModel
+    from transformers.utils import logging as transformer_logging
+    from huggingface_hub.utils import are_progress_bars_disabled, disable_progress_bars, enable_progress_bars
+
+    # Windows background launches can leave Manager's stderr handle invalid.
+    # Weight loading must not depend on rendering a console progress bar.
+    enabled = transformer_logging.is_progress_bar_enabled()
+    hub_disabled = are_progress_bars_disabled()
+    transformer_logging.disable_progress_bar()
+    try:
+        return CLIPTextModel.from_pretrained(source, subfolder="text_encoder", **options)
+    finally:
+        if enabled:
+            transformer_logging.enable_progress_bar()
+        if hub_disabled:
+            disable_progress_bars()
+        else:
+            enable_progress_bars()
+
+
 class UndoPipeline:
     def load(self):
         from diffusers import AutoencoderKL, UNet2DConditionModel
         from diffusers.models.attention_processor import AttnProcessor2_0
-        from transformers import CLIPTextModel, CLIPTokenizer
+        from transformers import CLIPTokenizer
         from .diffusers_helper.cat_cond import unet_add_concat_conds
         from .diffusers_helper.code_cond import unet_add_coded_conds
         from .diffusers_helper.k_diffusion import KDiffusionSampler
@@ -61,7 +82,7 @@ class UndoPipeline:
         source = str(directory / "single_frame") if (directory / "single_frame").is_dir() else "lllyasviel/paints_undo_single_frame"
         options = {"cache_dir": str(directory)}
         self.tokenizer = CLIPTokenizer.from_pretrained(source, subfolder="tokenizer", **options)
-        self.text_encoder = CLIPTextModel.from_pretrained(source, subfolder="text_encoder", **options).to(self.dtype).eval()
+        self.text_encoder = load_clip_text_encoder(source, **options).to(self.dtype).eval()
         self.vae = AutoencoderKL.from_pretrained(source, subfolder="vae", **options).float().eval()
         self.unet = ModifiedUNet.from_pretrained(source, subfolder="unet", low_cpu_mem_usage=False, **options).to(self.dtype).eval()
         self.unet.set_attn_processor(AttnProcessor2_0())

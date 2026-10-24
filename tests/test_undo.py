@@ -76,6 +76,34 @@ class ContractTests(unittest.TestCase):
             runner.run(torch.zeros(1, 64, 64, 3), 'test', [400], 0)
         model.cpu.assert_called_once()
 
+    def test_loading_with_invalid_stderr_and_restored_progress(self):
+        from transformers import CLIPTextModel
+        from transformers.utils import logging as log
+        from huggingface_hub import utils as hub
+        class BrokenConsole:
+            def write(self, text):
+                raise OSError(22, 'Invalid argument')
+            def flush(self):
+                raise OSError(22, 'Invalid argument')
+        original = log.is_progress_bar_enabled(), hub.are_progress_bars_disabled()
+        def load(*args, **kwargs):
+            self.assertEqual(list(log.tqdm(range(2), desc='Loading weights')), [0, 1])
+            return 'loaded'
+        try:
+            for enabled, disabled in [(True, False), (True, True), (False, False), (False, True)]:
+                (log.enable_progress_bar if enabled else log.disable_progress_bar)()
+                (hub.disable_progress_bars if disabled else hub.enable_progress_bars)()
+                with patch.object(CLIPTextModel, 'from_pretrained', side_effect=load), patch('sys.stderr', BrokenConsole()):
+                    self.assertEqual(pipeline.load_clip_text_encoder('unused'), 'loaded')
+                self.assertEqual((log.is_progress_bar_enabled(), hub.are_progress_bars_disabled()), (enabled, disabled))
+                with patch.object(CLIPTextModel, 'from_pretrained', side_effect=ValueError('bad weights')):
+                    with self.assertRaisesRegex(ValueError, 'bad weights'):
+                        pipeline.load_clip_text_encoder('unused')
+                self.assertEqual((log.is_progress_bar_enabled(), hub.are_progress_bars_disabled()), (enabled, disabled))
+        finally:
+            (log.enable_progress_bar if original[0] else log.disable_progress_bar)()
+            (hub.disable_progress_bars if original[1] else hub.enable_progress_bars)()
+
 
 if __name__ == '__main__':
     unittest.main()
